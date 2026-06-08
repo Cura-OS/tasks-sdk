@@ -29,7 +29,7 @@ export const tasksHealth = <ThrowOnError extends boolean = false>(options?: Opti
 export const tasksProtectedProbe = <ThrowOnError extends boolean = false>(options?: Options<TasksProtectedProbeData, ThrowOnError>): RequestResult<TasksProtectedProbeResponses, TasksProtectedProbeErrors, ThrowOnError> => (options?.client ?? client).get<TasksProtectedProbeResponses, TasksProtectedProbeErrors, ThrowOnError>({ url: '/tasks/protected', ...options });
 
 /**
- * Demonstration write — actor bound to the JWT principal.
+ * Demonstration write - actor bound to the JWT principal.
  */
 export const tasksProtectedWrite = <ThrowOnError extends boolean = false>(options: Options<TasksProtectedWriteData, ThrowOnError>): RequestResult<TasksProtectedWriteResponses, TasksProtectedWriteErrors, ThrowOnError> => (options.client ?? client).post<TasksProtectedWriteResponses, TasksProtectedWriteErrors, ThrowOnError>({
     url: '/tasks/protected-write',

@@ -1,6 +1,6 @@
 // Consumer smoke: this file IS the sample consumer. It imports ONLY the
 // published SDK surface and exercises the typed operations + the client +
-// event types — no hand-written HTTP/Kafka plumbing, no manual fetch, no DTO
+// event types - no hand-written HTTP/Kafka plumbing, no manual fetch, no DTO
 // copies.
 //
 // The recipe-stable assertions below (`createClient` barrel + `client`

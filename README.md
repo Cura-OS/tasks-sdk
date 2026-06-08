@@ -1,6 +1,6 @@
 # @curaos/tasks-sdk
 
-Typed client for `tasks-service` — REST operations and event wire-types,
+Typed client for `tasks-service` - REST operations and event wire-types,
 **generated from the service's contracts**. No hand-written HTTP or Kafka
 plumbing; the SDK is the only client code a consumer needs.
 
@@ -33,7 +33,7 @@ bun run generate
 ```
 
 The generated output under `src/` is committed and guarded: `test/drift.test.ts`
-fails if the committed SDK is not byte-identical to a fresh regeneration — a
+fails if the committed SDK is not byte-identical to a fresh regeneration - a
 contract change that was not re-run through `bun run generate`, or a generator
 version bump, is caught in CI.
 

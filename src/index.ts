@@ -1,4 +1,4 @@
-// @curaos/tasks-sdk — public surface.
+// @curaos/tasks-sdk - public surface.
 //
 // Generated from tasks-service's TypeSpec REST contract (specs/tasks.tsp ->
 // OpenAPI 3.1 -> @hey-api/openapi-ts) and its AsyncAPI event contract
