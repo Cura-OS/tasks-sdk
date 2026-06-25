@@ -23,6 +23,7 @@ export default defineConfig({
     // so the drift guard can rely on byte-equality. (`postProcess: []` is the
     // non-deprecated form of the old `format: false` / `lint: false`.)
     postProcess: [],
+    tsConfigPath: resolve(here, 'openapi-ts.tsconfig.json'),
   },
   plugins: ['@hey-api/client-fetch'],
 });

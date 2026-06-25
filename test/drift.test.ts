@@ -9,11 +9,67 @@
 
 import { describe, expect, test } from 'bun:test';
 import { spawnSync } from 'node:child_process';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const pkgRoot = join(import.meta.dir, '..');
 const srcDir = join(pkgRoot, 'src');
+const lockDir = join(pkgRoot, '..', '.sdk-drift-generate.lock');
+const serviceCandidates = [join(pkgRoot, '../../services/tasks-core-service')];
+const allowMissingService = process.env.CURAOS_SDK_DRIFT_ALLOW_MISSING_SERVICE === '1';
+
+function readJson(path: string): Record<string, unknown> | undefined {
+  if (!existsSync(path)) return undefined;
+  return JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
+}
+
+function hasSpecOpenapiScript(serviceDir: string): boolean {
+  const pkg = readJson(join(serviceDir, 'package.json'));
+  const scripts = pkg?.scripts;
+  return Boolean(
+    scripts && typeof scripts === 'object' && (scripts as Record<string, unknown>)['spec:openapi'],
+  );
+}
+
+function contractRegenUnavailableReason(): string | undefined {
+  const checkedOut = serviceCandidates.filter((serviceDir) =>
+    existsSync(join(serviceDir, 'package.json')),
+  );
+  if (checkedOut.length === 0) {
+    return `source service not checked out: ${serviceCandidates.join(', ')}`;
+  }
+  const missingScript = checkedOut.filter((serviceDir) => !hasSpecOpenapiScript(serviceDir));
+  if (missingScript.length > 0) {
+    return `source service missing spec:openapi: ${missingScript.join(', ')}`;
+  }
+  return undefined;
+}
+
+function sleep(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function withGenerateLock<T>(fn: () => T): T {
+  const deadline = Date.now() + 60_000;
+  for (;;) {
+    try {
+      mkdirSync(lockDir);
+      break;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== 'EEXIST' || Date.now() > deadline) {
+        throw error;
+      }
+      sleep(100);
+    }
+  }
+
+  try {
+    return fn();
+  } finally {
+    rmSync(lockDir, { recursive: true, force: true });
+  }
+}
 
 function walk(dir: string): string[] {
   const out: string[] = [];
@@ -37,13 +93,36 @@ function snapshot(): Record<string, string> {
 
 describe('contract-drift guard', () => {
   test('committed SDK == fresh regeneration from the contracts', () => {
+    const unavailableReason = contractRegenUnavailableReason();
+    if (unavailableReason) {
+      if (!allowMissingService || unavailableReason.includes('missing spec:openapi')) {
+        throw new Error(
+          `${unavailableReason}. Set CURAOS_SDK_DRIFT_ALLOW_MISSING_SERVICE=1 only in submodule-less CI coverage clones.`,
+        );
+      }
+      console.warn(`contract-drift guard skipped: ${unavailableReason}`);
+      return;
+    }
+
     const before = snapshot();
 
-    const result = spawnSync('bun', ['run', 'generate'], {
-      cwd: pkgRoot,
-      encoding: 'utf8',
-    });
-    expect(result.status).toBe(0);
+    const result = withGenerateLock(() =>
+      spawnSync('bun', ['run', 'generate'], {
+        cwd: pkgRoot,
+        encoding: 'utf8',
+      }),
+    );
+    expect(
+      result.status,
+      [
+        'bun run generate failed',
+        result.error ? `error: ${result.error.message}` : '',
+        result.stdout ? `stdout:\n${result.stdout}` : '',
+        result.stderr ? `stderr:\n${result.stderr}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n'),
+    ).toBe(0);
 
     const after = snapshot();
 

@@ -36,7 +36,9 @@ function run(cmd, args, cwd) {
 run('bun', ['run', 'spec:openapi'], servicePath);
 
 // 2. OpenAPI -> typed REST client (config = openapi-ts.config.ts)
-run('bunx', ['@hey-api/openapi-ts'], pkgRoot);
+// Pin the exact version (matches the package.json devDep) so a fresh SDK regen
+// never resolves bunx `@latest` (MODULE_NOT_FOUND / version-drift foot-gun).
+run('bunx', ['@hey-api/openapi-ts@0.98.1'], pkgRoot);
 
 // 3. AsyncAPI -> typed event wire-types
 run('bun', ['scripts/gen-events.mjs'], pkgRoot);
