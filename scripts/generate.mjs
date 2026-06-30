@@ -17,7 +17,7 @@ import { dirname, resolve } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const pkgRoot = resolve(here, '..');
 // `-core-service` (ADR-0210 neutral root): dir is `tasks-core-service`, not the
-// `gen:sdk`-default `<name>-service`. Patched locally; see PR body + codegen follow-up.
+// plain `<name>-service` form. This path is emitted directly by `gen:sdk`.
 const servicePath = resolve(pkgRoot, '../../services/tasks-core-service');
 const openapiPath = resolve(servicePath, 'dist/openapi.yaml');
 const sdkPublicGatewayBaseUrl = undefined;

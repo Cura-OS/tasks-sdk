@@ -10,9 +10,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 // TypeSpec contract via `bun run spec:openapi` (= `tsp compile specs/tasks.tsp`).
 // scripts/generate.mjs runs that compile first, so this file always exists.
 // NOTE: this is a `-core-service` (ADR-0210 neutral root), so the service dir is
-// `tasks-core-service`, not the `gen:sdk`-default `<name>-service`. The recipe
-// assumes `<name>-service`; this single dir ref is patched locally (see PR body +
-// codegen follow-up). The SDK package name stays `@curaos/tasks-sdk`.
+// `tasks-core-service`, not the plain `<name>-service` form. The SDK package name stays
+// `@curaos/tasks-sdk`.
 const openapiInput = resolve(here, '../../services/tasks-core-service/dist/openapi.yaml');
 
 export default defineConfig({
