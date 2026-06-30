@@ -13,7 +13,7 @@ import { dirname, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 // `-core-service` (ADR-0210 neutral root): dir is `tasks-core-service`, not the
-// `gen:sdk`-default `<name>-service`. Patched locally; see PR body + codegen follow-up.
+// plain `<name>-service` form. This path is emitted directly by `gen:sdk`.
 const asyncapiPath = resolve(
   here,
   '../../../services/tasks-core-service/specs/tasks.asyncapi.yaml',
