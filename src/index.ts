@@ -11,12 +11,14 @@
 // `createClient()` from `@hey-api/client-fetch`.
 //
 // Events: the snake_case envelope wire-types (the canonical envelope; do NOT
-// camelCase) for the event-consumer surface.
-//
-// NOTE: re-run `bun run generate` to (re)create the `./rest` + `./events.gen`
-// outputs this barrel re-exports, then add the service-specific event-type
-// re-export below (the event interface names come from the AsyncAPI schema ids).
+// camelCase) for the event-consumer surface, plus the clinical alert-type
+// catalog types (`ClinicalAlertPayload`, `EscalationRung`, XSRC-E4-10).
 
 export * from './rest';
 export { client } from './rest/client.gen';
-// export type { TasksEventPayload, EventHeaders } from './events.gen';
+export type {
+  TasksEventPayload,
+  EventHeaders,
+  ClinicalAlertPayload,
+  EscalationRung,
+} from './events.gen';
