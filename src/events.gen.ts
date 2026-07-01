@@ -3,6 +3,31 @@
 // `bun run generate` to refresh. Drift is enforced by test/drift.test.ts.
 
 /**
+ * The clinical alert-type catalog payload (XSRC-E4-10). Reference-only (PHI boundary): `subject_ref` + escalation-chain refs are opaque party references; `summary` is a bounded non-PHI string.
+ */
+export interface ClinicalAlertPayload {
+alert_type: string
+severity: ("info" | "warning" | "critical")
+subject_ref: string
+tenant_id: string
+escalation_chain: {
+clinicianRef: string
+escalatedAt: string
+}[]
+high_risk: boolean
+actionable: boolean
+summary: string
+definition_ref: string
+source_service: string
+occurred_at: string
+}
+
+export interface EscalationRung {
+clinicianRef: string
+escalatedAt: string
+}
+
+/**
  * Canonical snake_case envelope (grill P1.6 - do NOT camelCase).
  */
 export interface TasksEventPayload {
