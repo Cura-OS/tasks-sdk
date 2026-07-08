@@ -1,46 +1,71 @@
-# @curaos/tasks-sdk
+# tasks-sdk _(@curaos/tasks-sdk)_
 
-Typed client for `tasks-service` - REST operations and event wire-types,
-**generated from the service's contracts**. No hand-written HTTP or Kafka
-plumbing; the SDK is the only client code a consumer needs.
+[![License: Proprietary](https://img.shields.io/badge/license-Proprietary-red)](./LICENSE)
+[![Exposure: Closed](https://img.shields.io/badge/exposure-Closed-red)](#license)
+[![Module: Sdk](https://img.shields.io/badge/module-Sdk-informational)](#background)
 
-- REST client + request/response types ← `tasks-service/specs/tasks.tsp`
-  (TypeSpec → OpenAPI 3.1 → [`@hey-api/openapi-ts`](https://heyapi.dev)).
-- Event payload + header types ← `tasks-service/specs/tasks.asyncapi.yaml`
-  (AsyncAPI 3.0.0 → `@asyncapi/parser` → `json-schema-to-typescript`).
+CuraOS @curaos/tasks-sdk - typed REST client + event wire-types generated from tasks-service&#x27;s TypeSpec + AsyncAPI contracts (ADR-0103 TypeSpec-first). Zero hand-written transport code.
 
-> Scaffolded by `bun run gen:sdk tasks` (the reusable SDK recipe, #308). Run
-> `bun run generate` to fill `src/rest/**` + `src/events.gen.ts` from the
-> contracts, then wire the service-specific re-exports in `src/index.ts` and the
-> assertions in `test/smoke.test.ts`.
+Part of the CuraOS (Care Oriented Stack) platform. CuraOS @curaos/tasks-sdk - typed REST client + event wire-types generated from tasks-service&#x27;s TypeSpec + AsyncAPI contracts (ADR-0103 TypeSpec-first). Zero hand-written transport code. Domain: neutral.
 
-## Installation
+## Table of Contents
 
-```sh
+- [Background](#background)
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+- [Security](#security)
+- [Maintainers](#maintainers)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Background
+
+CuraOS @curaos/tasks-sdk - typed REST client + event wire-types generated from tasks-service&#x27;s TypeSpec + AsyncAPI contracts (ADR-0103 TypeSpec-first). Zero hand-written transport code.. This module is part of the CuraOS neutral domain, plain layer.
+
+<!-- curaos:keep -->
+<!-- Add module-specific background, architecture notes, and design decisions here.
+     This section survives re-emit (keep-fence protected). -->
+<!-- /curaos:keep -->
+
+## Install
+
+```bash
 bun add @curaos/tasks-sdk
 ```
 
-The package publishes to the CuraOS Verdaccio registry; `.npmrc` already scopes
-`@curaos:registry=http://localhost:4873`.
+## Usage
 
-## Regenerating from the contract
+See [docs.curaos.abualruz.com](https://docs.curaos.abualruz.com) (interim).
 
-One command re-runs the whole chain (service spec compile → REST client → event
-types) from the committed contracts:
+<!-- curaos:keep -->
+<!-- Add usage examples, code snippets, and integration patterns here.
+     This section survives re-emit (keep-fence protected). -->
+<!-- /curaos:keep -->
 
-```sh
-bun run generate
-```
+## API
 
-The generated output under `src/` is committed and guarded: `test/drift.test.ts`
-fails if the committed SDK is not byte-identical to a fresh regeneration - a
-contract change that was not re-run through `bun run generate`, or a generator
-version bump, is caught in CI.
+See [API reference](./src/index.ts) or generated TypeDoc.
 
-## Commands
+<!-- curaos:keep -->
+<!-- Add API examples, request/response samples, and event payloads here.
+     This section survives re-emit (keep-fence protected). -->
+<!-- /curaos:keep -->
 
-```sh
-bunx turbo run typecheck --filter=@curaos/tasks-sdk
-bunx turbo run test      --filter=@curaos/tasks-sdk
-bunx turbo run build     --filter=@curaos/tasks-sdk
-```
+## Security
+
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting policy.
+
+## Maintainers
+
+- CuraOS Team - [GitHub](https://github.com/Cura-OS)
+
+## Contributing
+
+Contributions are handled through the repository maintainers. Public contribution guidelines are emitted for open and source-available repositories.
+
+By contributing, you agree that your contributions will be licensed under the same license as this project.
+
+## License
+
+LicenseRef-CuraOS-Proprietary - CuraOS (Care Oriented Stack). See [LICENSE](./LICENSE) for details.
