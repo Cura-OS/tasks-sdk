@@ -1,46 +1,114 @@
-# @curaos/tasks-sdk
+<div align="center">
 
-Typed client for `tasks-service` - REST operations and event wire-types,
-**generated from the service's contracts**. No hand-written HTTP or Kafka
-plumbing; the SDK is the only client code a consumer needs.
 
-- REST client + request/response types ← `tasks-service/specs/tasks.tsp`
-  (TypeSpec → OpenAPI 3.1 → [`@hey-api/openapi-ts`](https://heyapi.dev)).
-- Event payload + header types ← `tasks-service/specs/tasks.asyncapi.yaml`
-  (AsyncAPI 3.0.0 → `@asyncapi/parser` → `json-schema-to-typescript`).
+# tasks-sdk
 
-> Scaffolded by `bun run gen:sdk tasks` (the reusable SDK recipe, #308). Run
-> `bun run generate` to fill `src/rest/**` + `src/events.gen.ts` from the
-> contracts, then wire the service-specific re-exports in `src/index.ts` and the
-> assertions in `test/smoke.test.ts`.
+**A typed client for tasks-core-service, generated from the service's TypeSpec REST contract and AsyncAPI event contract, so any consumer imports a typed REST client + event wire-types with zero hand-written transport code. Generated from the reusable mold set by @curaos/notify-sdk for the M10 SDK package class (#278-284).**
 
-## Installation
+Part of the CuraOS (Care Oriented Stack) platform. A typed client for tasks-core-service, generated from the service's TypeSpec REST contract and AsyncAPI event contract, so any consumer imports a typed REST client + event wire-types with zero hand-written transport code. Generated from the reusable mold set by @curaos/notify-sdk for the M10 SDK package class (#278-284). Domain: neutral.
 
-```sh
+[![Status](https://img.shields.io/badge/status-private--alpha-informational)](#status)
+[![License: Proprietary](https://img.shields.io/badge/license-Proprietary-red)](./LICENSE)
+[![Exposure: Closed](https://img.shields.io/badge/exposure-Closed-red)](#license)
+[![Module: Sdk](https://img.shields.io/badge/module-Sdk-informational)](#how-it-works)
+
+[Why](#why) · [Quick Start](#quick-start) · [Capabilities](#capabilities) · [How it Works](#how-it-works) · [Status](#status) · [Security](#security)
+
+</div>
+
+---
+
+## Why
+
+A typed client for tasks-core-service, generated from the service's TypeSpec REST contract and AsyncAPI event contract, so any consumer imports a typed REST client + event wire-types with zero hand-written transport code. Generated from the reusable mold set by @curaos/notify-sdk for the M10 SDK package class (#278-284).
+
+<!-- curaos:keep -->
+<!-- /curaos:keep -->
+
+---
+
+## Quick Start
+
+```bash
 bun add @curaos/tasks-sdk
 ```
 
-The package publishes to the CuraOS Verdaccio registry; `.npmrc` already scopes
-`@curaos:registry=http://localhost:4873`.
+<!-- curaos:keep -->
+<!-- /curaos:keep -->
 
-## Regenerating from the contract
+---
 
-One command re-runs the whole chain (service spec compile → REST client → event
-types) from the committed contracts:
+## Capabilities
 
-```sh
-bun run generate
-```
+- Generate REST operations + request/response types from tasks.tsp
+- Generate event payload + header wire-types from tasks.asyncapi.yaml.
+- Expose a configurable client (client.setConfig / createClient).
+- One-command regeneration from the contracts (bun run generate).
 
-The generated output under `src/` is committed and guarded: `test/drift.test.ts`
-fails if the committed SDK is not byte-identical to a fresh regeneration - a
-contract change that was not re-run through `bun run generate`, or a generator
-version bump, is caught in CI.
+<!-- curaos:keep -->
+<!-- /curaos:keep -->
 
-## Commands
+---
 
-```sh
-bunx turbo run typecheck --filter=@curaos/tasks-sdk
-bunx turbo run test      --filter=@curaos/tasks-sdk
-bunx turbo run build     --filter=@curaos/tasks-sdk
-```
+## How it Works
+
+| Area | Detail |
+|---|---|
+| Package | `@curaos/tasks-sdk` |
+| Source | `backend/packages/tasks-sdk` |
+| Domain | `neutral` |
+| Layer | `package` |
+| Exposure | Closed |
+
+- Source path: `backend/packages/tasks-sdk`
+- Generated documentation owner: `tools/codegen/src/repo-docs-emit.ts`
+
+<!-- curaos:keep -->
+<!-- /curaos:keep -->
+
+---
+
+## API and Usage
+
+See [docs.curaos.abualruz.com](https://docs.curaos.abualruz.com) (interim).
+
+See [API reference](./src/index.ts) or generated TypeDoc.
+
+<!-- curaos:keep -->
+<!-- /curaos:keep -->
+
+---
+
+## Status
+
+private alpha
+
+- Docs generated from `tools/codegen/src/repo-docs-emit.ts`.
+- Public documentation: [docs.curaos.abualruz.com](https://docs.curaos.abualruz.com).
+- Changelog: [CHANGELOG.md](./CHANGELOG.md) when present.
+
+---
+
+## Security
+
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting policy.
+
+---
+
+## Maintainers
+
+- CuraOS Team - [GitHub](https://github.com/Cura-OS)
+
+---
+
+## Contributing
+
+Contributions are handled through the repository maintainers. Public contribution guidelines are emitted for open and source-available repositories.
+
+By contributing, you agree that your contributions will be licensed under the same license as this project.
+
+---
+
+## License
+
+LicenseRef-CuraOS-Proprietary - CuraOS (Care Oriented Stack). See [LICENSE](./LICENSE) for details.
