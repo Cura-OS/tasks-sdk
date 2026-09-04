@@ -16,6 +16,7 @@ import { dirname, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const pkgRoot = resolve(here, '..');
+const repoRoot = resolve(pkgRoot, '..', '..', '..');
 // `-core-service` (ADR-0210 neutral root): dir is `tasks-core-service`, not the
 // plain `<name>-service` form. This path is emitted directly by `gen:sdk`.
 const servicePath = resolve(pkgRoot, '../../services/tasks-core-service');
@@ -62,11 +63,15 @@ function normalizeOpenapiServers() {
     '    variables: {}',
   ];
   const replacement = 'servers:\n' + servers.join('\n') + '\n';
-  const next = source.replace(/\nservers:\n[\s\S]*$/u, '\n' + replacement);
-  if (next === source) {
+  const serversBlock = /\nservers:\n[\s\S]*$/u;
+  // Check presence, not whether the substitution changes anything: the TypeSpec
+  // compiler's own @server output can already be byte-identical to `replacement`
+  // (both @server decorators emit this exact shape), so `next === source` is a
+  // false "missing block" signal on a no-op normalize.
+  if (!serversBlock.test(source)) {
     throw new Error('cannot normalize OpenAPI servers: missing root servers block in ' + openapiPath);
   }
-  writeFileSync(openapiPath, next);
+  writeFileSync(openapiPath, source.replace(serversBlock, '\n' + replacement));
 }
 
 // 1. service contract -> OpenAPI 3.1 (tsp compile specs/tasks.tsp -> dist/openapi.yaml)
@@ -85,11 +90,24 @@ runBin('openapi-ts', [], pkgRoot);
 // 3. AsyncAPI -> typed event wire-types
 run('bun', ['scripts/gen-events.mjs'], pkgRoot);
 
-// 4. Format the generated output with the repo's biome config. @hey-api emits
-// long single-line `index.ts` re-exports that the pre-commit biome hook would
+// 4. Format the generated output. @hey-api emits long
+// single-line `index.ts` re-exports that the pre-commit biome hook would
 // otherwise rewrite - formatting here keeps the committed output == the hook
 // output == a fresh regen, so test/drift.test.ts stays byte-stable. (`.gen.ts`
-// is biome-ignored, so this only normalizes the emitted index files.)
-runBin('biome', ['format', '--write', 'src'], pkgRoot);
+// is biome-ignored, so this only normalizes the emitted index files.) The
+// root biome.json excludes backend/packages/** from its own file walk (each
+// package is a separate repo formatted on its own terms), so this step uses
+// a dedicated config scoped to just this package instead of ambient
+// config resolution, which would otherwise silently match zero files.
+runBin(
+  'biome',
+  [
+    'format',
+    '--write',
+    'src',
+    '--config-path=' + resolve(repoRoot, 'tools/codegen/config/sdk-generate-biome.json'),
+  ],
+  pkgRoot,
+);
 
 console.log('\ntasks-sdk regenerated from contracts.');
